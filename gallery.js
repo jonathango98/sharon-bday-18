@@ -1,0 +1,98 @@
+/* gallery.js — fetches /gallery and renders frames on the wall */
+
+const TILTS = [-3.5, -2.5, -1.8, -1, 0.8, 1.5, 2.2, 3, -0.5, 1.2];
+let tiltIndex = 0;
+function nextTilt() {
+  const t = TILTS[tiltIndex % TILTS.length];
+  tiltIndex++;
+  return t;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function buildFrame(card) {
+  const tilt = nextTilt();
+  const isLandscape = card.landscape === true;
+
+  const article = document.createElement('article');
+  article.className = 'frame' + (isLandscape ? ' frame--landscape' : '');
+  article.style.transform = `rotate(${tilt}deg)`;
+
+  const mat = document.createElement('div');
+  mat.className = 'frame__mat';
+
+  if (card.photoUrl) {
+    const img = document.createElement('img');
+    img.className = 'frame__photo';
+    img.src = card.photoUrl;
+    img.alt = '';
+    img.loading = 'lazy';
+    // If image turns out to be landscape, flip the class
+    img.addEventListener('load', () => {
+      if (img.naturalWidth > img.naturalHeight) {
+        article.classList.add('frame--landscape');
+        article.classList.remove('frame--portrait');
+      }
+    });
+    mat.appendChild(img);
+  } else {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'frame__photo-placeholder';
+    placeholder.textContent = '🌸';
+    mat.appendChild(placeholder);
+  }
+
+  if (card.wish) {
+    const wish = document.createElement('p');
+    wish.className = 'frame__wish';
+    wish.innerHTML = '&#8220;' + escHtml(card.wish) + '&#8221;';
+    mat.appendChild(wish);
+  }
+
+  if (card.firstName) {
+    const name = document.createElement('div');
+    name.className = 'frame__name';
+    name.textContent = '— ' + card.firstName;
+    mat.appendChild(name);
+  }
+
+  article.appendChild(mat);
+  return article;
+}
+
+async function loadGallery() {
+  const status = document.getElementById('status');
+  const wall   = document.getElementById('gallery-wall');
+
+  try {
+    const res = await fetch(window.BACKEND_URL + '/gallery');
+    if (!res.ok) throw new Error(`Server responded ${res.status}`);
+    const { cards } = await res.json();
+
+    if (!cards || cards.length === 0) {
+      status.innerHTML = '<p>No messages yet — check back soon!</p>';
+      return;
+    }
+
+    status.hidden = true;
+    wall.hidden = false;
+
+    // Shuffle so the wall looks different each load
+    const shuffled = cards.slice().sort(() => Math.random() - 0.5);
+    shuffled.forEach(card => wall.appendChild(buildFrame(card)));
+
+  } catch (err) {
+    console.error(err);
+    status.innerHTML =
+      '<p>Couldn\'t load the gallery right now.</p>' +
+      '<p style="margin-top:.5rem;font-size:.85rem">Please refresh to try again.</p>';
+  }
+}
+
+loadGallery();

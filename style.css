@@ -1,0 +1,186 @@
+/* ── Reset & base ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --wall:      #1a1310;       /* deep warm dark — the "wall" */
+  --wall-mid:  #231a15;
+  --frame-bg:  #f5efe6;       /* cream mat */
+  --frame-bdr: #7a5c3a;       /* warm wood frame */
+  --frame-inner: #c4a47a;     /* inner frame highlight */
+  --text:      #2c1e10;
+  --caption:   #5c3d1e;
+  --shadow:    rgba(0,0,0,0.65);
+}
+
+html { font-size: 16px; }
+
+body {
+  background-color: var(--wall);
+  /* subtle wood-grain texture via repeating-linear-gradient */
+  background-image:
+    repeating-linear-gradient(
+      92deg,
+      transparent 0px, transparent 3px,
+      rgba(255,255,255,0.015) 3px, rgba(255,255,255,0.015) 4px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px, transparent 8px,
+      rgba(0,0,0,0.08) 8px, rgba(0,0,0,0.08) 9px
+    );
+  min-height: 100vh;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── Header ───────────────────────────────────────── */
+header {
+  text-align: center;
+  padding: 3rem 1rem 1.5rem;
+  color: #e8d5b7;
+}
+
+header h1 {
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: normal;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+
+header p {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #a08060;
+  letter-spacing: 0.05em;
+}
+
+/* ── Gallery wall ─────────────────────────────────── */
+#gallery-wall {
+  /* CSS multi-column masonry — the closest thing to a real wall layout */
+  columns: 280px;
+  column-gap: 2rem;
+  padding: 2rem 3rem 5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ── Frame (card) ─────────────────────────────────── */
+.frame {
+  break-inside: avoid;
+  display: inline-block;   /* required so columns honour break-inside */
+  width: 100%;
+  margin-bottom: 2.2rem;
+
+  /* Outer frame border — thick, like a real picture frame */
+  background: var(--frame-bdr);
+  border: 3px solid #4a3520;
+  border-radius: 3px;
+  padding: 10px;
+
+  box-shadow:
+    0 4px 8px  var(--shadow),
+    0 12px 32px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+
+  /* Random slight tilt — set via JS inline style */
+  transform-origin: center center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.frame:hover {
+  transform: rotate(0deg) scale(1.03) !important;
+  box-shadow:
+    0 8px 20px var(--shadow),
+    0 20px 50px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+  z-index: 10;
+  position: relative;
+}
+
+/* Inner mat (cream mount) */
+.frame__mat {
+  background: var(--frame-bg);
+  padding: 10px 10px 14px;
+  border: 2px solid var(--frame-inner);
+}
+
+/* Photo area */
+.frame__photo {
+  width: 100%;
+  display: block;
+  aspect-ratio: 3 / 4;   /* portrait default */
+  object-fit: cover;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+/* Landscape photo override */
+.frame--landscape .frame__photo {
+  aspect-ratio: 4 / 3;
+}
+
+/* Placeholder when no photo */
+.frame__photo-placeholder {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(135deg, #d4c4a8 0%, #b8a07a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: rgba(0,0,0,0.2);
+}
+
+/* Wish text */
+.frame__wish {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text);
+  font-style: italic;
+  text-align: center;
+}
+
+/* Name tag at bottom */
+.frame__name {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  text-align: center;
+  color: var(--caption);
+  letter-spacing: 0.04em;
+  font-style: normal;
+}
+
+/* ── Loading / error states ───────────────────────── */
+#status {
+  text-align: center;
+  color: #a08060;
+  padding: 4rem 1rem;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+#status .spinner {
+  display: inline-block;
+  width: 28px; height: 28px;
+  border: 3px solid rgba(160,128,96,0.3);
+  border-top-color: #a08060;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 480px) {
+  #gallery-wall {
+    columns: 1;
+    padding: 1.2rem 1.2rem 4rem;
+  }
+  .frame { margin-bottom: 1.6rem; }
+}
+
+@media (min-width: 481px) and (max-width: 780px) {
+  #gallery-wall { columns: 2; padding: 1.5rem 1.5rem 4rem; }
+}
