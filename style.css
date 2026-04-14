@@ -72,7 +72,7 @@ header p {
   width: 100%;
   margin-bottom: 2.2rem;
 
-  /* Outer frame border — thick, like a real picture frame */
+  /* Default: warm wood */
   background: var(--frame-bdr);
   border: 3px solid #4a3520;
   border-radius: 3px;
@@ -83,7 +83,6 @@ header p {
     0 12px 32px rgba(0,0,0,0.5),
     inset 0 1px 0 rgba(255,255,255,0.12);
 
-  /* Random slight tilt — set via JS inline style */
   transform-origin: center center;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   cursor: zoom-in;
@@ -99,7 +98,69 @@ header p {
   position: relative;
 }
 
-/* Inner mat (cream mount) */
+/* ── Frame style variants ─────────────────────────── */
+
+/* Gold / ornate */
+.frame--gold {
+  background: linear-gradient(135deg, #b8952a 0%, #e8c84a 30%, #c9a830 60%, #f0d870 80%, #b8952a 100%);
+  border: 3px solid #7a6010;
+  box-shadow:
+    0 4px 8px var(--shadow),
+    0 12px 32px rgba(0,0,0,0.55),
+    inset 0 2px 0 rgba(255,255,200,0.3),
+    inset 0 -2px 0 rgba(0,0,0,0.25);
+}
+.frame--gold .frame__mat {
+  background: #fffdf0;
+  border-color: #c8a820;
+}
+
+/* Ebony / dark */
+.frame--ebony {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2e2e2e 40%, #1a1a1a 100%);
+  border: 3px solid #0a0a0a;
+  box-shadow:
+    0 4px 8px var(--shadow),
+    0 12px 32px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.frame--ebony .frame__mat {
+  background: #f8f4ee;
+  border-color: #444;
+}
+
+/* White / modern */
+.frame--white {
+  background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 40%, #e8e8e8 100%);
+  border: 3px solid #ccc;
+  box-shadow:
+    0 4px 8px rgba(0,0,0,0.3),
+    0 12px 32px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+.frame--white .frame__mat {
+  background: #fafafa;
+  border-color: #ddd;
+}
+.frame--white .frame__wish,
+.frame--white .frame__name { color: #333; }
+
+/* Rose / pink */
+.frame--rose {
+  background: linear-gradient(135deg, #c06080 0%, #e8a0b8 30%, #d07090 60%, #f0c0d0 80%, #c06080 100%);
+  border: 3px solid #904060;
+  box-shadow:
+    0 4px 8px var(--shadow),
+    0 12px 32px rgba(0,0,0,0.45),
+    inset 0 2px 0 rgba(255,200,220,0.35),
+    inset 0 -2px 0 rgba(0,0,0,0.2);
+}
+.frame--rose .frame__mat {
+  background: #fff5f8;
+  border-color: #e090a8;
+}
+
+/* ── Inner mat (cream mount) — default ────────────── */
 .frame__mat {
   background: var(--frame-bg);
   padding: 10px 10px 14px;
@@ -175,6 +236,7 @@ header p {
 }
 
 #lightbox .lb-frame {
+  /* base — overridden by .frame--* variants copied from the card */
   background: var(--frame-bdr);
   border: 3px solid #4a3520;
   border-radius: 3px;
@@ -188,6 +250,18 @@ header p {
   animation: lb-zoom-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   cursor: default;
 }
+
+/* carry frame variants into lightbox */
+#lightbox .lb-frame.frame--gold  { background: linear-gradient(135deg, #b8952a 0%, #e8c84a 30%, #c9a830 60%, #f0d870 80%, #b8952a 100%); border-color: #7a6010; }
+#lightbox .lb-frame.frame--gold  .frame__mat { background: #fffdf0; border-color: #c8a820; }
+#lightbox .lb-frame.frame--ebony { background: linear-gradient(135deg, #1a1a1a 0%, #2e2e2e 40%, #1a1a1a 100%); border-color: #0a0a0a; }
+#lightbox .lb-frame.frame--ebony .frame__mat { background: #f8f4ee; border-color: #444; }
+#lightbox .lb-frame.frame--white { background: linear-gradient(135deg, #f0f0f0 0%, #fff 40%, #e8e8e8 100%); border-color: #ccc; box-shadow: 0 16px 48px rgba(0,0,0,0.5); }
+#lightbox .lb-frame.frame--white .frame__mat { background: #fafafa; border-color: #ddd; }
+#lightbox .lb-frame.frame--white .frame__wish,
+#lightbox .lb-frame.frame--white .frame__name { color: #333; }
+#lightbox .lb-frame.frame--rose  { background: linear-gradient(135deg, #c06080 0%, #e8a0b8 30%, #d07090 60%, #f0c0d0 80%, #c06080 100%); border-color: #904060; }
+#lightbox .lb-frame.frame--rose  .frame__mat { background: #fff5f8; border-color: #e090a8; }
 
 @keyframes lb-zoom-in {
   from { transform: scale(0.6); opacity: 0; }

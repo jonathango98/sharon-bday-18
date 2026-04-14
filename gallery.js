@@ -8,6 +8,15 @@ function nextTilt() {
   return t;
 }
 
+// Frame style variants — spread evenly so the wall looks varied
+const FRAME_STYLES = ['', '--gold', '--ebony', '--white', '--rose'];
+let styleIndex = 0;
+function nextFrameStyle() {
+  const s = FRAME_STYLES[styleIndex % FRAME_STYLES.length];
+  styleIndex++;
+  return s;
+}
+
 function escHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -18,10 +27,12 @@ function escHtml(str) {
 
 function buildFrame(card) {
   const tilt = nextTilt();
+  const styleVariant = nextFrameStyle();
   const isLandscape = card.landscape === true;
 
   const article = document.createElement('article');
-  article.className = 'frame' + (isLandscape ? ' frame--landscape' : '');
+  const styleClass = styleVariant ? ` frame${styleVariant}` : '';
+  article.className = 'frame' + styleClass + (isLandscape ? ' frame--landscape' : '');
   article.style.transform = `rotate(${tilt}deg)`;
 
   const mat = document.createElement('div');
@@ -73,6 +84,13 @@ function buildFrame(card) {
 function openLightbox(frameEl) {
   const lightbox = document.getElementById('lightbox');
   const lbFrame  = lightbox.querySelector('.lb-frame');
+
+  // Mirror the card's frame variant on the lightbox frame
+  const variantClasses = ['frame--gold', 'frame--ebony', 'frame--white', 'frame--rose'];
+  lbFrame.classList.remove(...variantClasses);
+  variantClasses.forEach(cls => {
+    if (frameEl.classList.contains(cls)) lbFrame.classList.add(cls);
+  });
 
   // Deep-clone the frame's inner mat so the lightbox shows identical content
   lbFrame.innerHTML = '';
