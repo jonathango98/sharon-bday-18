@@ -63,8 +63,42 @@ function buildFrame(card) {
   }
 
   article.appendChild(mat);
+
+  article.addEventListener('click', () => openLightbox(article));
+
   return article;
 }
+
+/* ── Lightbox ───────────────────────────────────────── */
+function openLightbox(frameEl) {
+  const lightbox = document.getElementById('lightbox');
+  const lbFrame  = lightbox.querySelector('.lb-frame');
+
+  // Deep-clone the frame's inner mat so the lightbox shows identical content
+  lbFrame.innerHTML = '';
+  lbFrame.appendChild(frameEl.querySelector('.frame__mat').cloneNode(true));
+
+  lightbox.classList.add('open');
+  document.addEventListener('keydown', onLightboxKey);
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.classList.remove('open');
+  document.removeEventListener('keydown', onLightboxKey);
+}
+
+function onLightboxKey(e) {
+  if (e.key === 'Escape') closeLightbox();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const lightbox = document.getElementById('lightbox');
+  // Close when clicking the backdrop (not the frame itself)
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) closeLightbox();
+  });
+});
 
 async function loadGallery() {
   const status = document.getElementById('status');
