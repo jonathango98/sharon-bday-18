@@ -1,11 +1,10 @@
 /* gallery.js — fetches /gallery and renders frames on the wall */
 
-const TILTS        = [-3.5, -2.5, -1.8, -1, 0.8, 1.5, 2.2, 3, -0.5, 1.2];
-const TILTS_MOBILE = [-1.5, -1, -0.5, 0.5, 1, 1.5, -0.8, 0.8, -1.2, 1.2];
+const TILTS = [-3.5, -2.5, -1.8, -1, 0.8, 1.5, 2.2, 3, -0.5, 1.2];
 const isMobile = () => window.matchMedia('(max-width: 480px)').matches;
 function nextTilt() {
-  const pool = isMobile() ? TILTS_MOBILE : TILTS;
-  return pool[Math.floor(Math.random() * pool.length)];
+  if (isMobile()) return 0;
+  return TILTS[Math.floor(Math.random() * TILTS.length)];
 }
 
 // Frame style variants — randomised per frame so the wall looks varied
