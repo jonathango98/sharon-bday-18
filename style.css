@@ -426,3 +426,52 @@ header p {
 body.lightbox-open {
   overflow: hidden;
 }
+
+/* ── Music toggle button ──────────────────────────── */
+#music-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 200;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 2px solid var(--frame-bdr);
+  background: var(--frame-bg);
+  color: var(--frame-bdr);
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+}
+
+#music-btn:hover {
+  background: #ede0ce;
+  transform: scale(1.08);
+}
+
+#music-btn.muted #music-icon::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 1.6rem;
+  background: var(--frame-bdr);
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+#music-btn {
+  position: fixed;
+}
+
+#music-btn #music-icon {
+  position: relative;
+  line-height: 1;
+}
+
+#music-btn.muted {
+  opacity: 0.55;
+}

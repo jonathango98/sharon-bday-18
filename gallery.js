@@ -138,6 +138,8 @@ function openLightbox(frameEl) {
   if (lbVideo) {
     lbVideo.controls = true;
     lbVideo.play().catch(() => {});
+    const bgMusic = document.getElementById('bg-music');
+    if (bgMusic) bgMusic.volume = 0.2;
   }
 
   lightbox.classList.add('open');
@@ -148,7 +150,11 @@ function openLightbox(frameEl) {
 function closeLightbox() {
   const lightbox = document.getElementById('lightbox');
   const lbVideo = lightbox.querySelector('video');
-  if (lbVideo) lbVideo.pause();
+  if (lbVideo) {
+    lbVideo.pause();
+    const bgMusic = document.getElementById('bg-music');
+    if (bgMusic) bgMusic.volume = 0.4;
+  }
   lightbox.classList.remove('open');
   document.body.classList.remove('lightbox-open');
   document.removeEventListener('keydown', onLightboxKey);
@@ -200,3 +206,42 @@ async function loadGallery() {
 }
 
 loadGallery();
+
+/* ── Background music ───────────────────────────── */
+(function initMusic() {
+  const audio = document.getElementById('bg-music');
+  const btn   = document.getElementById('music-btn');
+  const icon  = document.getElementById('music-icon');
+
+  let playing = false;
+
+  function setPlaying(on) {
+    playing = on;
+    if (on) {
+      audio.play().catch(() => {});
+      btn.classList.remove('muted');
+      btn.setAttribute('aria-label', 'Mute background music');
+      icon.textContent = '♪';
+    } else {
+      audio.pause();
+      btn.classList.add('muted');
+      btn.setAttribute('aria-label', 'Play background music');
+      icon.textContent = '♪';
+    }
+  }
+
+  btn.addEventListener('click', () => setPlaying(!playing));
+
+  // Try autoplay once the page is loaded; browsers may block it —
+  // in that case the button lets the user start it manually.
+  window.addEventListener('load', () => {
+    audio.volume = 0.4;
+    audio.play().then(() => {
+      playing = true;
+      btn.classList.remove('muted');
+    }).catch(() => {
+      // Autoplay blocked — show button in muted state so user can click
+      btn.classList.add('muted');
+    });
+  });
+})();
