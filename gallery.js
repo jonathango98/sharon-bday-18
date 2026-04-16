@@ -1,9 +1,12 @@
 /* gallery.js — fetches /gallery and renders frames on the wall */
 
-const TILTS = [-3.5, -2.5, -1.8, -1, 0.8, 1.5, 2.2, 3, -0.5, 1.2];
+const TILTS        = [-3.5, -2.5, -1.8, -1, 0.8, 1.5, 2.2, 3, -0.5, 1.2];
+const TILTS_MOBILE = [-1.5, -1, -0.5, 0.5, 1, 1.5, -0.8, 0.8, -1.2, 1.2];
+const isMobile = () => window.matchMedia('(max-width: 480px)').matches;
 let tiltIndex = 0;
 function nextTilt() {
-  const t = TILTS[tiltIndex % TILTS.length];
+  const pool = isMobile() ? TILTS_MOBILE : TILTS;
+  const t = pool[tiltIndex % pool.length];
   tiltIndex++;
   return t;
 }
@@ -97,12 +100,14 @@ function openLightbox(frameEl) {
   lbFrame.appendChild(frameEl.querySelector('.frame__mat').cloneNode(true));
 
   lightbox.classList.add('open');
+  document.body.classList.add('lightbox-open');
   document.addEventListener('keydown', onLightboxKey);
 }
 
 function closeLightbox() {
   const lightbox = document.getElementById('lightbox');
   lightbox.classList.remove('open');
+  document.body.classList.remove('lightbox-open');
   document.removeEventListener('keydown', onLightboxKey);
 }
 
@@ -112,10 +117,14 @@ function onLightboxKey(e) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const lightbox = document.getElementById('lightbox');
+
   // Close when clicking the backdrop (not the frame itself)
   lightbox.addEventListener('click', e => {
     if (e.target === lightbox) closeLightbox();
   });
+
+  // Close button (important for mobile — no Escape key)
+  lightbox.querySelector('.lb-close').addEventListener('click', closeLightbox);
 });
 
 async function loadGallery() {

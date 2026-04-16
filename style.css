@@ -64,6 +64,7 @@ header p {
   columns: 280px;
   column-gap: 2rem;
   padding: 2rem 3rem 5rem;
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -91,7 +92,8 @@ header p {
   cursor: zoom-in;
 }
 
-.frame:hover {
+.frame:hover,
+.frame:active {
   transform: rotate(0deg) scale(1.03) !important;
   box-shadow:
     0 8px 20px var(--shadow),
@@ -99,6 +101,10 @@ header p {
     inset 0 1px 0 rgba(255,255,255,0.18);
   z-index: 10;
   position: relative;
+}
+
+.frame {
+  touch-action: manipulation;
 }
 
 /* ── Frame style variants ─────────────────────────── */
@@ -226,7 +232,30 @@ header p {
   align-items: center;
   justify-content: center;
   cursor: zoom-out;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
+
+.lb-close {
+  position: absolute;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.lb-close:active { background: rgba(255,255,255,0.3); }
 
 #lightbox.open {
   display: flex;
@@ -245,8 +274,9 @@ header p {
   border-radius: 3px;
   padding: 12px;
   max-width: min(520px, 90vw);
-  max-height: 90vh;
+  max-height: min(90vh, 90dvh);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow:
     0 16px 48px rgba(0,0,0,0.8),
     inset 0 1px 0 rgba(255,255,255,0.12);
@@ -321,11 +351,28 @@ header p {
 @media (max-width: 480px) {
   #gallery-wall {
     columns: 1;
-    padding: 1.2rem 1.2rem 4rem;
+    padding: 1rem 1rem 4rem;
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
   }
-  .frame { margin-bottom: 1.6rem; }
+  .frame {
+    margin-bottom: 1.6rem;
+  }
+  .frame:active {
+    transform: scale(1.02) !important;
+  }
+  header {
+    padding: 2rem 1rem 1rem;
+  }
+  header h1 {
+    font-size: clamp(1.3rem, 6vw, 1.8rem);
+  }
 }
 
 @media (min-width: 481px) and (max-width: 780px) {
   #gallery-wall { columns: 2; padding: 1.5rem 1.5rem 4rem; }
+}
+
+/* Prevent background scroll when lightbox is open */
+body.lightbox-open {
+  overflow: hidden;
 }
