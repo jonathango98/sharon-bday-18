@@ -274,8 +274,8 @@ function waitForMedia(container) {
 async function loadGallery() {
   const status  = document.getElementById('status');
   const wall    = document.getElementById('gallery-wall');
-  const minWait = new Promise(resolve => setTimeout(resolve, 5000));
-  const maxWait = new Promise(resolve => setTimeout(resolve, 10000));
+  const minWait = new Promise(resolve => setTimeout(resolve, 2000));
+  const maxWait = new Promise(resolve => setTimeout(resolve, 5000));
 
   try {
     const res = await fetch(window.BACKEND_URL + '/gallery');
@@ -293,8 +293,8 @@ async function loadGallery() {
     const shuffled = cards.slice().sort(() => Math.random() - 0.5);
     shuffled.forEach(card => wall.appendChild(buildFrame(card)));
 
-    // Wait for the 5-second minimum AND every image/video to finish loading,
-    // but give up and show the site after 15 seconds regardless.
+    // Wait for the 2-second minimum AND every image/video to finish loading,
+    // but give up and show the site after 5 seconds regardless.
     await Promise.race([maxWait, Promise.all([minWait, ...waitForMedia(wall)])]);
 
     hideLoadingScreen(_loadingInterval);
