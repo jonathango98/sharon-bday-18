@@ -249,45 +249,12 @@ header p {
   padding-left: 3px; /* optical centre for ▶ glyph */
 }
 
-#lightbox.lightbox--video {
-  padding: 0;
-}
-
-#lightbox.lightbox--video .lb-frame {
-  background: #000;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  max-width: 100vw;
-  max-height: 100vh;
-  width: 100vw;
-  height: 100vh;
-  box-shadow: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-#lightbox.lightbox--video .lb-frame .frame__mat {
-  background: none;
-  border: none;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#lightbox .lb-frame .frame__video {
   width: 100%;
-  height: 100%;
-}
-
-#lightbox.lightbox--video .lb-frame .frame__video {
   aspect-ratio: unset;
-  width: auto;
-  height: 100vh;
-  max-width: 100vw;
-  max-height: 100vh;
+  max-height: 60vh;
   object-fit: contain;
-  border: none;
+  border: 1px solid rgba(0,0,0,0.15);
   pointer-events: auto;
 }
 

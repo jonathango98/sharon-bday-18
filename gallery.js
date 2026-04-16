@@ -133,14 +133,11 @@ function openLightbox(frameEl) {
   lbFrame.innerHTML = '';
   lbFrame.appendChild(frameEl.querySelector('.frame__mat').cloneNode(true));
 
-  // If the frame contains a video, go full-screen and play it
+  // If the frame contains a video, enable controls and play it
   const lbVideo = lbFrame.querySelector('video');
   if (lbVideo) {
     lbVideo.controls = true;
     lbVideo.play().catch(() => {});
-    lightbox.classList.add('lightbox--video');
-  } else {
-    lightbox.classList.remove('lightbox--video');
   }
 
   lightbox.classList.add('open');
@@ -152,7 +149,7 @@ function closeLightbox() {
   const lightbox = document.getElementById('lightbox');
   const lbVideo = lightbox.querySelector('video');
   if (lbVideo) lbVideo.pause();
-  lightbox.classList.remove('open', 'lightbox--video');
+  lightbox.classList.remove('open');
   document.body.classList.remove('lightbox-open');
   document.removeEventListener('keydown', onLightboxKey);
 }
