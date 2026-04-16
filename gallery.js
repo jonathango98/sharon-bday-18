@@ -1,5 +1,54 @@
 /* gallery.js — fetches /gallery and renders frames on the wall */
 
+/* ── Loading screen messages ────────────────────────── */
+const LOADING_TEXTS = [
+  'baking a bday cake…',
+  'blowing up balloons…',
+  'adding gifts to cart…',
+  'writing birthday cards…',
+  'picking the perfect playlist…',
+  'lighting the candles…',
+  'tying the ribbons…',
+  'hiding all the presents…',
+  'perfecting the icing…',
+  'teaching everyone the dance moves…',
+  'ordering the confetti…',
+  'assembling the party crew…',
+  'hanging up the streamers…',
+  'setting up the surprise…',
+  'making a birthday wish…',
+];
+
+function startLoadingTextCycle() {
+  const el = document.getElementById('ls-text');
+  if (!el) return null;
+  let idx = 0;
+
+  function showNext() {
+    el.classList.add('hidden');
+    setTimeout(() => {
+      idx = (idx + 1) % LOADING_TEXTS.length;
+      el.textContent = LOADING_TEXTS[idx];
+      el.classList.remove('hidden');
+    }, 350);
+  }
+
+  el.textContent = LOADING_TEXTS[0];
+  const interval = setInterval(showNext, 1800);
+  return interval;
+}
+
+function hideLoadingScreen(intervalId) {
+  if (intervalId != null) clearInterval(intervalId);
+  const screen = document.getElementById('loading-screen');
+  if (!screen) return;
+  screen.classList.add('fade-out');
+  screen.addEventListener('transitionend', () => screen.remove(), { once: true });
+}
+
+const _loadingInterval = startLoadingTextCycle();
+
+
 const TILTS = [-3.5, -2.5, -1.8, -1, 0.8, 1.5, 2.2, 3, -0.5, 1.2];
 const isMobile = () => window.matchMedia('(max-width: 480px)').matches;
 function nextTilt() {
@@ -186,19 +235,22 @@ async function loadGallery() {
     const { cards } = await res.json();
 
     if (!cards || cards.length === 0) {
+      hideLoadingScreen(_loadingInterval);
       status.innerHTML = '<p>No messages yet — check back soon!</p>';
       return;
     }
-
-    status.hidden = true;
-    wall.hidden = false;
 
     // Shuffle so the wall looks different each load
     const shuffled = cards.slice().sort(() => Math.random() - 0.5);
     shuffled.forEach(card => wall.appendChild(buildFrame(card)));
 
+    hideLoadingScreen(_loadingInterval);
+    status.hidden = true;
+    wall.hidden = false;
+
   } catch (err) {
     console.error(err);
+    hideLoadingScreen(_loadingInterval);
     status.innerHTML =
       '<p>Couldn\'t load the gallery right now.</p>' +
       '<p style="margin-top:.5rem;font-size:.85rem">Please refresh to try again.</p>';
@@ -232,16 +284,26 @@ loadGallery();
 
   btn.addEventListener('click', () => setPlaying(!playing));
 
-  // Try autoplay once the page is loaded; browsers may block it —
-  // in that case the button lets the user start it manually.
-  window.addEventListener('load', () => {
+  function tryPlay() {
+    if (playing) return;
     audio.volume = 0.4;
     audio.play().then(() => {
-      playing = true;
-      btn.classList.remove('muted');
-    }).catch(() => {
-      // Autoplay blocked — show button in muted state so user can click
-      btn.classList.add('muted');
-    });
-  });
+      setPlaying(true);
+    }).catch(() => {});
+  }
+
+  // Try autoplay on load (works in some browsers / contexts)
+  window.addEventListener('load', tryPlay);
+
+  // Fallback: start on first user interaction (click/tap/key) —
+  // browsers require a gesture before allowing audio playback.
+  const firstGesture = () => {
+    tryPlay();
+    document.removeEventListener('click',      firstGesture);
+    document.removeEventListener('touchstart', firstGesture);
+    document.removeEventListener('keydown',    firstGesture);
+  };
+  document.addEventListener('click',      firstGesture, { once: true });
+  document.addEventListener('touchstart', firstGesture, { once: true });
+  document.addEventListener('keydown',    firstGesture, { once: true });
 })();

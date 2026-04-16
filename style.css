@@ -1,3 +1,93 @@
+/* ── Loading screen ───────────────────────────────── */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: var(--wall, #f2ede6);
+  background-image:
+    radial-gradient(ellipse at 25% 25%, rgba(180,150,110,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 75%, rgba(180,150,110,0.08) 0%, transparent 50%),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px, transparent 18px,
+      rgba(160,130,90,0.06) 18px, rgba(160,130,90,0.06) 19px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px, transparent 18px,
+      rgba(160,130,90,0.06) 18px, rgba(160,130,90,0.06) 19px
+    );
+  background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+
+#loading-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.ls-inner {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.ls-cake {
+  font-size: 3.5rem;
+  animation: ls-bounce 1.4s ease-in-out infinite;
+}
+
+@keyframes ls-bounce {
+  0%, 100% { transform: translateY(0);      }
+  45%       { transform: translateY(-14px);  }
+  60%       { transform: translateY(-8px);   }
+  75%       { transform: translateY(-14px);  }
+}
+
+.ls-text {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  color: #7a5030;
+  letter-spacing: 0.07em;
+  font-style: italic;
+  min-height: 2em;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+.ls-text.hidden {
+  opacity: 0;
+}
+
+/* Three bouncing dots */
+.ls-dots {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.ls-dots span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c4a47a;
+  animation: ls-dot 1.2s ease-in-out infinite;
+}
+
+.ls-dots span:nth-child(2) { animation-delay: 0.2s; }
+.ls-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes ls-dot {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+  40%            { transform: scale(1.1); opacity: 1;   }
+}
+
 /* ── Reset & base ─────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
