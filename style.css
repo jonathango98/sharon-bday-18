@@ -350,12 +350,13 @@ header p {
 /* ── Responsive ───────────────────────────────────── */
 @media (max-width: 480px) {
   #gallery-wall {
-    columns: 1;
-    padding: 1rem 1rem 4rem;
+    columns: 2;
+    column-gap: 0.75rem;
+    padding: 0.75rem 0.75rem 4rem;
     padding-bottom: calc(4rem + env(safe-area-inset-bottom));
   }
   .frame {
-    margin-bottom: 1.6rem;
+    margin-bottom: 0.75rem;
   }
   .frame:active {
     transform: scale(1.02) !important;
