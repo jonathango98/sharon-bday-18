@@ -65,6 +65,66 @@
   opacity: 0;
 }
 
+.ls-inner {
+  transition: opacity 0.5s ease;
+}
+
+.ls-inner.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Reveal button */
+.ls-reveal-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+
+.ls-reveal-wrap.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ls-reveal-btn {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: #4a2e10;
+  background: linear-gradient(135deg, #f5e6c8 0%, #fffdf0 40%, #f0d898 100%);
+  border: 2px solid #c4a47a;
+  border-radius: 4px;
+  padding: 1rem 2.2rem;
+  cursor: pointer;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,220,0.6);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  animation: ls-btn-pulse 2.4s ease-in-out infinite;
+}
+
+.ls-reveal-btn:hover {
+  transform: scale(1.04);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,220,0.6);
+}
+
+.ls-reveal-btn:active {
+  transform: scale(0.97);
+}
+
+@keyframes ls-btn-pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,220,0.6), 0 0 0 0 rgba(196,164,122,0); }
+  50%       { box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,220,0.6), 0 0 0 10px rgba(196,164,122,0); }
+}
+
 /* Three bouncing dots */
 .ls-dots {
   display: flex;

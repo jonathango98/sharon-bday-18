@@ -1,5 +1,8 @@
 /* gallery.js — fetches /gallery and renders frames on the wall */
 
+// Exposed by initMusic so hideLoadingScreen can trigger playback on button click.
+let _tryPlayMusic = null;
+
 /* ── Loading screen messages ────────────────────────── */
 const LOADING_TEXTS = [
   'baking a bday cake…',
@@ -42,11 +45,31 @@ function hideLoadingScreen(intervalId) {
   if (intervalId != null) clearInterval(intervalId);
   const screen = document.getElementById('loading-screen');
   if (!screen) return;
-  // Attempt to start music the moment the screen fades — this works if the
-  // browser already unlocked audio (e.g. user tapped during loading).
-  if (typeof _tryPlayMusic === 'function') _tryPlayMusic();
-  screen.classList.add('fade-out');
-  screen.addEventListener('transitionend', () => screen.remove(), { once: true });
+
+  // Fade out the spinner/text
+  const inner = screen.querySelector('.ls-inner');
+  if (inner) inner.classList.add('fade-out');
+
+  // Fade in the "open your present" button
+  const wrap = document.getElementById('ls-reveal-wrap');
+  if (wrap) {
+    // Double rAF ensures the transition fires after the element is painted
+    requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('visible')));
+  }
+
+  const btn = document.getElementById('ls-reveal-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      if (typeof _tryPlayMusic === 'function') _tryPlayMusic();
+      screen.classList.add('fade-out');
+      screen.addEventListener('transitionend', () => screen.remove(), { once: true });
+    }, { once: true });
+  } else {
+    // Fallback: no button, just fade out
+    if (typeof _tryPlayMusic === 'function') _tryPlayMusic();
+    screen.classList.add('fade-out');
+    screen.addEventListener('transitionend', () => screen.remove(), { once: true });
+  }
 }
 
 const _loadingInterval = startLoadingTextCycle();
@@ -252,7 +275,7 @@ async function loadGallery() {
   const status  = document.getElementById('status');
   const wall    = document.getElementById('gallery-wall');
   const minWait = new Promise(resolve => setTimeout(resolve, 5000));
-  const maxWait = new Promise(resolve => setTimeout(resolve, 15000));
+  const maxWait = new Promise(resolve => setTimeout(resolve, 10000));
 
   try {
     const res = await fetch(window.BACKEND_URL + '/gallery');
@@ -291,9 +314,6 @@ async function loadGallery() {
 loadGallery();
 
 /* ── Background music ───────────────────────────── */
-// _tryPlayMusic is module-level so hideLoadingScreen can call it.
-let _tryPlayMusic = null;
-
 (function initMusic() {
   const audio = document.getElementById('bg-music');
   const btn   = document.getElementById('music-btn');
