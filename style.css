@@ -180,14 +180,8 @@ header p {
 .frame__photo {
   width: 100%;
   display: block;
-  aspect-ratio: 3 / 4;   /* portrait default */
   object-fit: cover;
   border: 1px solid rgba(0,0,0,0.15);
-}
-
-/* Landscape photo override */
-.frame--landscape .frame__photo {
-  aspect-ratio: 4 / 3;
 }
 
 /* Placeholder when no photo */

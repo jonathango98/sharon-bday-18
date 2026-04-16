@@ -41,12 +41,10 @@ function buildFrame(card) {
     img.src = card.photoUrl;
     img.alt = '';
     img.loading = 'lazy';
-    // If image turns out to be landscape, flip the class
     img.addEventListener('load', () => {
-      if (img.naturalWidth > img.naturalHeight) {
-        article.classList.add('frame--landscape');
-        article.classList.remove('frame--portrait');
-      }
+      const ratio = img.naturalWidth / img.naturalHeight;
+      const clamped = Math.min(2, Math.max(0.5, ratio));
+      img.style.aspectRatio = clamped;
     });
     mat.appendChild(img);
   } else {
