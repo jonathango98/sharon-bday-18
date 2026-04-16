@@ -217,13 +217,9 @@ header p {
 }
 
 /* ── Video frames ─────────────────────────────────── */
-.frame.frame--video {
-  cursor: default;
-}
-
-.frame.frame--video:hover,
-.frame.frame--video:active {
-  cursor: default;
+.frame__video-wrap {
+  position: relative;
+  line-height: 0;
 }
 
 .frame__video {
@@ -232,6 +228,36 @@ header p {
   aspect-ratio: 9 / 16;
   background: #000;
   border: 1px solid rgba(0,0,0,0.15);
+  pointer-events: none;
+}
+
+.frame__play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: #fff;
+  font-size: 1.1rem;
+  padding-left: 3px; /* optical centre for ▶ glyph */
+}
+
+#lightbox .lb-frame .frame__video {
+  aspect-ratio: unset;
+  max-height: 60vh;
+  object-fit: contain;
+  pointer-events: auto;
+}
+
+#lightbox .lb-frame .frame__play-btn {
+  display: none;
 }
 
 /* ── Lightbox ─────────────────────────────────────── */

@@ -53,13 +53,22 @@ function buildFrame(card) {
   mat.className = 'frame__mat';
 
   if (isVideo) {
+    const wrap = document.createElement('div');
+    wrap.className = 'frame__video-wrap';
+
     const video = document.createElement('video');
     video.className = 'frame__video';
     video.src = card.videoUrl;
-    video.controls = true;
     video.setAttribute('preload', 'metadata');
     video.setAttribute('playsinline', '');
-    mat.appendChild(video);
+    wrap.appendChild(video);
+
+    const playBtn = document.createElement('div');
+    playBtn.className = 'frame__play-btn';
+    playBtn.textContent = '▶';
+    wrap.appendChild(playBtn);
+
+    mat.appendChild(wrap);
 
     const label = promptLabel(card.promptNum, card.firstName);
     if (label) {
@@ -103,10 +112,7 @@ function buildFrame(card) {
 
   article.appendChild(mat);
 
-  // Video frames: don't open lightbox — let user interact with the video directly
-  if (!isVideo) {
-    article.addEventListener('click', () => openLightbox(article));
-  }
+  article.addEventListener('click', () => openLightbox(article));
 
   return article;
 }
@@ -127,6 +133,13 @@ function openLightbox(frameEl) {
   lbFrame.innerHTML = '';
   lbFrame.appendChild(frameEl.querySelector('.frame__mat').cloneNode(true));
 
+  // If the frame contains a video, enable controls and play it
+  const lbVideo = lbFrame.querySelector('video');
+  if (lbVideo) {
+    lbVideo.controls = true;
+    lbVideo.play().catch(() => {});
+  }
+
   lightbox.classList.add('open');
   document.body.classList.add('lightbox-open');
   document.addEventListener('keydown', onLightboxKey);
@@ -134,6 +147,8 @@ function openLightbox(frameEl) {
 
 function closeLightbox() {
   const lightbox = document.getElementById('lightbox');
+  const lbVideo = lightbox.querySelector('video');
+  if (lbVideo) lbVideo.pause();
   lightbox.classList.remove('open');
   document.body.classList.remove('lightbox-open');
   document.removeEventListener('keydown', onLightboxKey);
