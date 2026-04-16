@@ -42,6 +42,9 @@ function hideLoadingScreen(intervalId) {
   if (intervalId != null) clearInterval(intervalId);
   const screen = document.getElementById('loading-screen');
   if (!screen) return;
+  // Attempt to start music the moment the screen fades — this works if the
+  // browser already unlocked audio (e.g. user tapped during loading).
+  if (typeof _tryPlayMusic === 'function') _tryPlayMusic();
   screen.classList.add('fade-out');
   screen.addEventListener('transitionend', () => screen.remove(), { once: true });
 }
@@ -225,9 +228,30 @@ document.addEventListener('DOMContentLoaded', () => {
   lightbox.querySelector('.lb-close').addEventListener('click', closeLightbox);
 });
 
+function waitForMedia(container) {
+  const els = [...container.querySelectorAll('img, video')];
+  return els.map(el => {
+    if (el.tagName === 'IMG') {
+      if (el.complete && el.naturalWidth > 0) return Promise.resolve();
+      return new Promise(resolve => {
+        el.addEventListener('load',  resolve, { once: true });
+        el.addEventListener('error', resolve, { once: true });
+      });
+    } else {
+      // video: wait for at least metadata (poster/dimensions known)
+      if (el.readyState >= 1) return Promise.resolve();
+      return new Promise(resolve => {
+        el.addEventListener('loadedmetadata', resolve, { once: true });
+        el.addEventListener('error',          resolve, { once: true });
+      });
+    }
+  });
+}
+
 async function loadGallery() {
-  const status = document.getElementById('status');
-  const wall   = document.getElementById('gallery-wall');
+  const status  = document.getElementById('status');
+  const wall    = document.getElementById('gallery-wall');
+  const minWait = new Promise(resolve => setTimeout(resolve, 5000));
 
   try {
     const res = await fetch(window.BACKEND_URL + '/gallery');
@@ -235,6 +259,7 @@ async function loadGallery() {
     const { cards } = await res.json();
 
     if (!cards || cards.length === 0) {
+      await minWait;
       hideLoadingScreen(_loadingInterval);
       status.innerHTML = '<p>No messages yet — check back soon!</p>';
       return;
@@ -244,12 +269,16 @@ async function loadGallery() {
     const shuffled = cards.slice().sort(() => Math.random() - 0.5);
     shuffled.forEach(card => wall.appendChild(buildFrame(card)));
 
+    // Wait for the 5-second minimum AND every image/video to finish loading
+    await Promise.all([minWait, ...waitForMedia(wall)]);
+
     hideLoadingScreen(_loadingInterval);
     status.hidden = true;
     wall.hidden = false;
 
   } catch (err) {
     console.error(err);
+    await minWait;
     hideLoadingScreen(_loadingInterval);
     status.innerHTML =
       '<p>Couldn\'t load the gallery right now.</p>' +
@@ -260,6 +289,9 @@ async function loadGallery() {
 loadGallery();
 
 /* ── Background music ───────────────────────────── */
+// _tryPlayMusic is module-level so hideLoadingScreen can call it.
+let _tryPlayMusic = null;
+
 (function initMusic() {
   const audio = document.getElementById('bg-music');
   const btn   = document.getElementById('music-btn');
@@ -292,11 +324,21 @@ loadGallery();
     }).catch(() => {});
   }
 
-  // Try autoplay on load (works in some browsers / contexts)
+  // Expose so hideLoadingScreen can call it at fade-out time.
+  _tryPlayMusic = tryPlay;
+
+  // Try silent autoplay on load (succeeds in some browsers/contexts).
   window.addEventListener('load', tryPlay);
 
-  // Fallback: start on first user interaction (click/tap/key) —
-  // browsers require a gesture before allowing audio playback.
+  // The loading screen covers the full viewport — any tap/click on it
+  // counts as a user gesture and unlocks audio immediately.
+  const lsEl = document.getElementById('loading-screen');
+  if (lsEl) {
+    lsEl.addEventListener('click',      tryPlay, { once: true });
+    lsEl.addEventListener('touchstart', tryPlay, { once: true });
+  }
+
+  // Final fallback: first interaction anywhere on the page.
   const firstGesture = () => {
     tryPlay();
     document.removeEventListener('click',      firstGesture);
