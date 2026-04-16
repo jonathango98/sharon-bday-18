@@ -3,21 +3,15 @@
 const TILTS        = [-3.5, -2.5, -1.8, -1, 0.8, 1.5, 2.2, 3, -0.5, 1.2];
 const TILTS_MOBILE = [-1.5, -1, -0.5, 0.5, 1, 1.5, -0.8, 0.8, -1.2, 1.2];
 const isMobile = () => window.matchMedia('(max-width: 480px)').matches;
-let tiltIndex = 0;
 function nextTilt() {
   const pool = isMobile() ? TILTS_MOBILE : TILTS;
-  const t = pool[tiltIndex % pool.length];
-  tiltIndex++;
-  return t;
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
-// Frame style variants — spread evenly so the wall looks varied
+// Frame style variants — randomised per frame so the wall looks varied
 const FRAME_STYLES = ['', '--gold', '--ebony', '--white', '--rose'];
-let styleIndex = 0;
 function nextFrameStyle() {
-  const s = FRAME_STYLES[styleIndex % FRAME_STYLES.length];
-  styleIndex++;
-  return s;
+  return FRAME_STYLES[Math.floor(Math.random() * FRAME_STYLES.length)];
 }
 
 function escHtml(str) {
