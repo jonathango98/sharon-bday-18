@@ -21,20 +21,54 @@ function escHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+function capitalize(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function promptLabel(promptNum, firstName) {
+  const name = capitalize(firstName);
+  switch (promptNum) {
+    case 1: return `one word ${name} thinks is best to describe you`;
+    case 2: return `what ${name} is most grateful for`;
+    case 3: return `${name}'s wish to you`;
+    default: return '';
+  }
+}
+
 function buildFrame(card) {
+  const isVideo = !!card.videoUrl;
   const tilt = nextTilt();
   const styleVariant = nextFrameStyle();
   const isLandscape = card.landscape === true;
 
   const article = document.createElement('article');
   const styleClass = styleVariant ? ` frame${styleVariant}` : '';
-  article.className = 'frame' + styleClass + (isLandscape ? ' frame--landscape' : '');
+  article.className = 'frame' + styleClass
+    + (isLandscape ? ' frame--landscape' : '')
+    + (isVideo ? ' frame--video' : '');
   article.style.transform = `rotate(${tilt}deg)`;
 
   const mat = document.createElement('div');
   mat.className = 'frame__mat';
 
-  if (card.photoUrl) {
+  if (isVideo) {
+    const video = document.createElement('video');
+    video.className = 'frame__video';
+    video.src = card.videoUrl;
+    video.controls = true;
+    video.setAttribute('preload', 'metadata');
+    video.setAttribute('playsinline', '');
+    mat.appendChild(video);
+
+    const label = promptLabel(card.promptNum, card.firstName);
+    if (label) {
+      const p = document.createElement('p');
+      p.className = 'frame__wish';
+      p.textContent = label;
+      mat.appendChild(p);
+    }
+  } else if (card.photoUrl) {
     const img = document.createElement('img');
     img.className = 'frame__photo';
     img.src = card.photoUrl;
@@ -46,6 +80,13 @@ function buildFrame(card) {
       img.style.aspectRatio = clamped;
     });
     mat.appendChild(img);
+
+    if (card.wish) {
+      const wish = document.createElement('p');
+      wish.className = 'frame__wish';
+      wish.innerHTML = '&#8220;' + escHtml(card.wish) + '&#8221;';
+      mat.appendChild(wish);
+    }
   } else {
     const placeholder = document.createElement('div');
     placeholder.className = 'frame__photo-placeholder';
@@ -53,23 +94,19 @@ function buildFrame(card) {
     mat.appendChild(placeholder);
   }
 
-  if (card.wish) {
-    const wish = document.createElement('p');
-    wish.className = 'frame__wish';
-    wish.innerHTML = '&#8220;' + escHtml(card.wish) + '&#8221;';
-    mat.appendChild(wish);
-  }
-
   if (card.firstName) {
     const name = document.createElement('div');
     name.className = 'frame__name';
-    name.textContent = '— ' + card.firstName;
+    name.textContent = '— ' + capitalize(card.firstName);
     mat.appendChild(name);
   }
 
   article.appendChild(mat);
 
-  article.addEventListener('click', () => openLightbox(article));
+  // Video frames: don't open lightbox — let user interact with the video directly
+  if (!isVideo) {
+    article.addEventListener('click', () => openLightbox(article));
+  }
 
   return article;
 }

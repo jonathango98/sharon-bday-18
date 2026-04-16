@@ -216,6 +216,24 @@ header p {
   font-style: normal;
 }
 
+/* ── Video frames ─────────────────────────────────── */
+.frame.frame--video {
+  cursor: default;
+}
+
+.frame.frame--video:hover,
+.frame.frame--video:active {
+  cursor: default;
+}
+
+.frame__video {
+  width: 100%;
+  display: block;
+  aspect-ratio: 9 / 16;
+  background: #000;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
 /* ── Lightbox ─────────────────────────────────────── */
 #lightbox {
   display: none;
