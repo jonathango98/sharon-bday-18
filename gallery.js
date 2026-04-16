@@ -65,7 +65,7 @@ function buildFrame(card) {
 
     const playBtn = document.createElement('div');
     playBtn.className = 'frame__play-btn';
-    playBtn.textContent = '▶';
+    playBtn.textContent = '';
     wrap.appendChild(playBtn);
 
     mat.appendChild(wrap);
