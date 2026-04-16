@@ -252,6 +252,7 @@ async function loadGallery() {
   const status  = document.getElementById('status');
   const wall    = document.getElementById('gallery-wall');
   const minWait = new Promise(resolve => setTimeout(resolve, 5000));
+  const maxWait = new Promise(resolve => setTimeout(resolve, 15000));
 
   try {
     const res = await fetch(window.BACKEND_URL + '/gallery');
@@ -259,7 +260,7 @@ async function loadGallery() {
     const { cards } = await res.json();
 
     if (!cards || cards.length === 0) {
-      await minWait;
+      await Promise.race([maxWait, minWait]);
       hideLoadingScreen(_loadingInterval);
       status.innerHTML = '<p>No messages yet — check back soon!</p>';
       return;
@@ -269,8 +270,9 @@ async function loadGallery() {
     const shuffled = cards.slice().sort(() => Math.random() - 0.5);
     shuffled.forEach(card => wall.appendChild(buildFrame(card)));
 
-    // Wait for the 5-second minimum AND every image/video to finish loading
-    await Promise.all([minWait, ...waitForMedia(wall)]);
+    // Wait for the 5-second minimum AND every image/video to finish loading,
+    // but give up and show the site after 15 seconds regardless.
+    await Promise.race([maxWait, Promise.all([minWait, ...waitForMedia(wall)])]);
 
     hideLoadingScreen(_loadingInterval);
     status.hidden = true;
@@ -278,7 +280,7 @@ async function loadGallery() {
 
   } catch (err) {
     console.error(err);
-    await minWait;
+    await Promise.race([maxWait, minWait]);
     hideLoadingScreen(_loadingInterval);
     status.innerHTML =
       '<p>Couldn\'t load the gallery right now.</p>' +
