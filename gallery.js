@@ -136,6 +136,7 @@ function buildFrame(card) {
     video.src = card.videoUrl;
     video.setAttribute('preload', 'metadata');
     video.setAttribute('playsinline', '');
+    video.addEventListener('loadedmetadata', () => { video.currentTime = 0.0001; }, { once: true });
     wrap.appendChild(video);
 
     const playBtn = document.createElement('div');
