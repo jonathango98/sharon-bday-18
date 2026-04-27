@@ -1,2 +1,12 @@
 [build]
   publish = "."
+
+[[redirects]]
+  from = "/main-video"
+  to   = "/main-video.html"
+  status = 200
+
+[[redirects]]
+  from = "/gallery"
+  to   = "/gallery.html"
+  status = 200

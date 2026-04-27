@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Sharon 🎂</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .play-main-btn {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 300;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 0.85rem;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      color: #4a2e10;
+      background: linear-gradient(135deg, #f5e6c8 0%, #fffdf0 40%, #f0d898 100%);
+      border: 2px solid #c4a47a;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,220,0.6);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .play-main-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,220,0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Play main video button -->
+  <a href="/main-video" class="play-main-btn">▶ play main video</a>
+
+  <!-- Loading screen -->
+  <div id="loading-screen" aria-live="polite" aria-label="Loading">
+    <div class="ls-inner">
+      <div class="ls-cake">🎂</div>
+      <p class="ls-text" id="ls-text">getting things ready…</p>
+      <div class="ls-dots"><span></span><span></span><span></span></div>
+    </div>
+    <div class="ls-reveal-wrap" id="ls-reveal-wrap">
+      <button class="ls-reveal-btn" id="ls-reveal-btn">🎁 click to open your present</button>
+    </div>
+  </div>
+
+  <header>
+    <h1>Happy 28th Birthday, Sharon!</h1>
+    <p>here are some messages &amp; memories from the people who love you</p>
+  </header>
+
+  <div id="status">
+    <div class="spinner"></div>
+    <div>Loading messages…</div>
+  </div>
+
+  <main id="gallery-wall" hidden></main>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged card">
+    <button class="lb-close" aria-label="Close">&times;</button>
+    <div class="lb-frame"></div>
+  </div>
+
+  <!-- Background music -->
+  <audio id="bg-music" loop src="music.mp3"></audio>
+
+  <!-- Floating music toggle -->
+  <button id="music-btn" aria-label="Toggle background music" title="Toggle music">
+    <span id="music-icon">♪</span>
+  </button>
+
+  <script src="config.js"></script>
+  <script src="gallery.js"></script>
+</body>
+</html>

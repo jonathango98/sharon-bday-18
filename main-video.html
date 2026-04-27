@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Sharon 🎂</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --wall: #f2ede6;
+      --frame-bdr: #7a5c3a;
+      --gold: #c4a47a;
+      --text-mid: #4a2e10;
+      --text-light: #8a6040;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--wall);
+      background-image:
+        radial-gradient(ellipse at 25% 25%, rgba(180,150,110,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 75%, rgba(180,150,110,0.08) 0%, transparent 50%),
+        repeating-linear-gradient(45deg, transparent 0px, transparent 18px, rgba(160,130,90,0.06) 18px, rgba(160,130,90,0.06) 19px),
+        repeating-linear-gradient(-45deg, transparent 0px, transparent 18px, rgba(160,130,90,0.06) 18px, rgba(160,130,90,0.06) 19px);
+      background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: var(--text-mid);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.3rem, 4vw, 2rem);
+      font-weight: normal;
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: 0.4rem;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .subtitle {
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      color: var(--text-light);
+      font-style: italic;
+      letter-spacing: 0.05em;
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .video-frame {
+      background: linear-gradient(135deg, #b8952a 0%, #e8c84a 30%, #c9a830 60%, #f0d870 80%, #b8952a 100%);
+      border: 3px solid #7a6010;
+      border-radius: 4px;
+      padding: 12px;
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.35),
+        0 20px 60px rgba(0,0,0,0.2),
+        inset 0 2px 0 rgba(255,255,200,0.3),
+        inset 0 -2px 0 rgba(0,0,0,0.25);
+      width: min(480px, 92vw);
+    }
+
+    .video-mat {
+      background: #fffdf0;
+      border: 2px solid #c8a820;
+      padding: 10px;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      background: #000;
+    }
+
+    .skip-link {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-light);
+      font-style: italic;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      background: none;
+      border: none;
+      font-family: inherit;
+    }
+
+    .skip-link:hover { color: var(--text-mid); }
+  </style>
+</head>
+<body>
+
+  <h1>Happy 28th Birthday, Sharon! 🎂</h1>
+  <p class="subtitle">from everyone who loves you</p>
+
+  <div class="video-frame">
+    <div class="video-mat">
+      <video id="main-video" controls playsinline autoplay>
+        <source src="sharong28.webm" type="video/webm" />
+      </video>
+    </div>
+  </div>
+
+  <button class="skip-link" id="skip-btn">skip to gallery →</button>
+
+  <script>
+    const video = document.getElementById('main-video');
+    const skipBtn = document.getElementById('skip-btn');
+
+    video.addEventListener('ended', () => {
+      window.location.href = '/gallery';
+    });
+
+    skipBtn.addEventListener('click', () => {
+      window.location.href = '/gallery';
+    });
+  </script>
+
+</body>
+</html>

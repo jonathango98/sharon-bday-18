@@ -4,48 +4,272 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Happy Birthday Sharon 🎂</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --wall: #f2ede6;
+      --frame-bdr: #7a5c3a;
+      --gold: #c4a47a;
+      --text-dark: #2c1e10;
+      --text-mid: #4a2e10;
+      --text-light: #8a6040;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--wall);
+      background-image:
+        radial-gradient(ellipse at 25% 25%, rgba(180,150,110,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 75%, rgba(180,150,110,0.08) 0%, transparent 50%),
+        repeating-linear-gradient(45deg, transparent 0px, transparent 18px, rgba(160,130,90,0.06) 18px, rgba(160,130,90,0.06) 19px),
+        repeating-linear-gradient(-45deg, transparent 0px, transparent 18px, rgba(160,130,90,0.06) 18px, rgba(160,130,90,0.06) 19px);
+      background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+
+    .candles {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      font-weight: normal;
+      color: var(--text-mid);
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      color: var(--text-light);
+      letter-spacing: 0.06em;
+      font-style: italic;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .countdown-wrap {
+      display: flex;
+      gap: clamp(1rem, 4vw, 2.5rem);
+      align-items: flex-start;
+      margin-bottom: 3rem;
+    }
+
+    .cd-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cd-box {
+      background: linear-gradient(135deg, #f5e6c8 0%, #fffdf0 40%, #f0d898 100%);
+      border: 2px solid var(--gold);
+      border-radius: 6px;
+      width: clamp(64px, 18vw, 100px);
+      height: clamp(64px, 18vw, 100px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 4px 16px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,220,0.7);
+      position: relative;
+    }
+
+    .cd-box::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: 50%;
+      height: 1px;
+      background: rgba(196,164,122,0.4);
+    }
+
+    .cd-num {
+      font-size: clamp(1.8rem, 6vw, 3rem);
+      font-weight: normal;
+      color: var(--text-mid);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .cd-label {
+      font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+      color: var(--text-light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .separator {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      color: var(--gold);
+      margin-top: clamp(16px, 4.5vw, 30px);
+      line-height: 1;
+    }
+
+    .message {
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      color: var(--text-light);
+      font-style: italic;
+      text-align: center;
+      letter-spacing: 0.05em;
+      max-width: 360px;
+    }
+
+    /* Ready state — shown when countdown hits zero */
+    #ready-msg {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    #ready-msg p {
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      color: var(--text-mid);
+      font-style: italic;
+      letter-spacing: 0.05em;
+    }
+
+    .open-btn {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      font-style: italic;
+      letter-spacing: 0.06em;
+      color: var(--text-dark);
+      background: linear-gradient(135deg, #f5e6c8 0%, #fffdf0 40%, #f0d898 100%);
+      border: 2px solid var(--gold);
+      border-radius: 4px;
+      padding: 0.9rem 2.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,220,0.6);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      animation: btn-pulse 2.4s ease-in-out infinite;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .open-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,220,0.6);
+    }
+
+    @keyframes btn-pulse {
+      0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,220,0.6), 0 0 0 0 rgba(196,164,122,0.4); }
+      50%       { box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,220,0.6), 0 0 0 12px rgba(196,164,122,0); }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Loading screen -->
-  <div id="loading-screen" aria-live="polite" aria-label="Loading">
-    <div class="ls-inner">
-      <div class="ls-cake">🎂</div>
-      <p class="ls-text" id="ls-text">getting things ready…</p>
-      <div class="ls-dots"><span></span><span></span><span></span></div>
+  <div class="candles">🕯️ 🎂 🕯️</div>
+  <h1>Happy Birthday, Sharon!</h1>
+  <p class="subtitle">something special is waiting for you</p>
+
+  <div id="countdown-wrap" class="countdown-wrap">
+    <div class="cd-unit">
+      <div class="cd-box"><span class="cd-num" id="cd-days">00</span></div>
+      <span class="cd-label">days</span>
     </div>
-    <div class="ls-reveal-wrap" id="ls-reveal-wrap">
-      <button class="ls-reveal-btn" id="ls-reveal-btn">🎁 click to open your present</button>
+    <div class="separator">:</div>
+    <div class="cd-unit">
+      <div class="cd-box"><span class="cd-num" id="cd-hours">00</span></div>
+      <span class="cd-label">hours</span>
+    </div>
+    <div class="separator">:</div>
+    <div class="cd-unit">
+      <div class="cd-box"><span class="cd-num" id="cd-mins">00</span></div>
+      <span class="cd-label">minutes</span>
+    </div>
+    <div class="separator">:</div>
+    <div class="cd-unit">
+      <div class="cd-box"><span class="cd-num" id="cd-secs">00</span></div>
+      <span class="cd-label">seconds</span>
     </div>
   </div>
 
-  <header>
-    <h1>Happy 28th Birthday, Sharon!</h1>
-    <p>here are some messages &amp; memories from the people who love you</p>
-  </header>
+  <p class="message" id="wait-msg">until midnight on April 28th ✨</p>
 
-  <div id="status">
-    <div class="spinner"></div>
-    <div>Loading messages…</div>
+  <div id="ready-msg">
+    <p>it's time — happy 28th birthday! 🎉</p>
+    <a href="/main-video" class="open-btn">🎁 open your present</a>
   </div>
 
-  <main id="gallery-wall" hidden></main>
+  <script>
+    // Target: midnight at the start of April 28 (local time)
+    const target = new Date(2026, 3, 28, 0, 0, 0, 0); // month is 0-indexed
 
-  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged card">
-    <button class="lb-close" aria-label="Close">&times;</button>
-    <div class="lb-frame"></div>
-  </div>
+    const daysEl  = document.getElementById('cd-days');
+    const hoursEl = document.getElementById('cd-hours');
+    const minsEl  = document.getElementById('cd-mins');
+    const secsEl  = document.getElementById('cd-secs');
+    const wrap    = document.getElementById('countdown-wrap');
+    const waitMsg = document.getElementById('wait-msg');
+    const readyMsg = document.getElementById('ready-msg');
 
-  <!-- Background music -->
-  <audio id="bg-music" loop src="music.mp3"></audio>
+    function pad(n) { return String(n).padStart(2, '0'); }
 
-  <!-- Floating music toggle -->
-  <button id="music-btn" aria-label="Toggle background music" title="Toggle music">
-    <span id="music-icon">♪</span>
-  </button>
+    function showReady() {
+      wrap.style.display = 'none';
+      waitMsg.style.display = 'none';
+      readyMsg.style.display = 'flex';
+      // Auto-redirect after 3 seconds
+      setTimeout(() => { window.location.href = '/main-video'; }, 3000);
+    }
 
-  <script src="config.js"></script>
-  <script src="gallery.js"></script>
+    function tick() {
+      const now  = new Date();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        showReady();
+        return;
+      }
+
+      const totalSecs = Math.floor(diff / 1000);
+      const secs  = totalSecs % 60;
+      const mins  = Math.floor(totalSecs / 60) % 60;
+      const hours = Math.floor(totalSecs / 3600) % 24;
+      const days  = Math.floor(totalSecs / 86400);
+
+      daysEl.textContent  = pad(days);
+      hoursEl.textContent = pad(hours);
+      minsEl.textContent  = pad(mins);
+      secsEl.textContent  = pad(secs);
+    }
+
+    // If countdown already passed, go straight to ready state
+    if (new Date() >= target) {
+      showReady();
+    } else {
+      tick();
+      setInterval(tick, 1000);
+    }
+  </script>
+
 </body>
 </html>
